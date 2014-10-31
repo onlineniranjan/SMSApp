@@ -62,6 +62,10 @@ http://www.springframework.org/schema/context/spring-context-4.0.xsd">
     <constructor-arg>
         <ref bean="sessionFactory" />
     </constructor-arg>
-</bean>
+	</bean>
+		<bean id="vote" class="com.sms.smsapp.Vote">
+	</bean>
+	<bean id="votes" class="com.sms.smsapp.Votes">
+	</bean>
 </beans>
 	

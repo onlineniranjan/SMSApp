@@ -58,5 +58,12 @@ public class UserDAOImpl implements UserDAO {
 		
 	}
 	
+	@Transactional 
+	public void saveVotes(Votes votes){
+		
+		Session session = sessionFactory.getCurrentSession();
+		
+		session.save(votes);
+	}
 	
 }

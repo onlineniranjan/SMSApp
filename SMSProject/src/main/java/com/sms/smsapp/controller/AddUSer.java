@@ -3,9 +3,7 @@ package com.sms.smsapp.controller;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.sms.smsapp.Events;
 import com.sms.smsapp.User;
-import com.sms.smsapp.UserDAOImpl;
+import com.sms.smsapp.Vote;
+import com.sms.smsapp.Votes;
 import com.sms.smsapp.dao.UserDAO;
 
 @Controller
@@ -68,6 +67,29 @@ public class AddUSer {
 		userDao.saveEvent(event);
 	}
 	
+	@Autowired
+	private Vote vote;
 	
-
+	@Autowired
+	private Votes votes;
+	
+	@RequestMapping(value="/AddVote")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void AddVote(@RequestParam(value = "eventid",required = true) String eventid,
+						@RequestParam(value="msisdn") String msisdn,
+						@RequestParam(value = "opt")String opt){
+		
+		logger.info("Received parameters from URL "+eventid+" "+msisdn+" "+opt);
+		vote.setEvent_ID(Integer.parseInt(eventid));
+		
+		
+		vote.setVoter_MSISDN(Long.parseLong(msisdn));
+		
+		votes.setVote(vote);
+		votes.setVote_Option(Integer.parseInt(opt));
+		
+		userDao.saveVotes(votes);
+		
+		
+	}
 }

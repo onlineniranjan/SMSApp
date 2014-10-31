@@ -1,10 +1,16 @@
 package com.sms.smsapp;
 
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -33,6 +39,10 @@ public class Events {
 	@Column(name="Active")
 	private Integer status;
 
+	@OneToMany
+    private Set<Votes> votes;
+	
+	
 	public Integer getEventId() {
 		return eventId;
 	}
@@ -80,6 +90,15 @@ public class Events {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+	public Set<Votes> getVotes() {
+		return votes;
+	}
+
+	public void setVotes(Set<Votes> votes) {
+		this.votes = votes;
+	}
+
 	
 	
 }

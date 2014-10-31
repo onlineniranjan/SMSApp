@@ -8,5 +8,6 @@
     <property name="show_sql">true</property> 
     <mapping resource="com/sms/smsapp/User.hbm.xml"/>
     <mapping class="com.sms.smsapp.Events" />
+    <mapping class="com.sms.smsapp.Votes" />
   </session-factory>
 </hibernate-configuration>
