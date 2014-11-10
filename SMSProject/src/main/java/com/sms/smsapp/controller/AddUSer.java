@@ -1,5 +1,10 @@
 package com.sms.smsapp.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -32,6 +37,14 @@ public class AddUSer {
         List<User> listUsers = userDao.list();
         ModelAndView model = new ModelAndView("home");
         model.addObject("userList", listUsers);
+        return model;
+    }
+    
+    @RequestMapping(value="/displayVotes")
+    public ModelAndView voteDisplay(@RequestParam(value = "eventId", required = true) String eventId) {
+        List<String> listVotes = userDao.getVotes(eventId);
+        ModelAndView model = new ModelAndView("votes");
+        model.addObject("listVotes", listVotes);
         return model;
     }
 	
@@ -87,9 +100,53 @@ public class AddUSer {
 		
 		votes.setVote(vote);
 		votes.setVote_Option(Integer.parseInt(opt));
-		
-		userDao.saveVotes(votes);
-		
+		try{
+			userDao.saveVotes(votes);
+		}
+		catch(Exception e){
+			logger.fatal(e);
+		}
 		
 	}
+	
+	@RequestMapping("/Processmsg")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void processmsg(@RequestParam(value = "sender",required = true)String source,
+						   @RequestParam(value = "msg",required = true)String msg){
+		
+		logger.info("Received sms for processing from "+ source + " message: "+msg);
+		
+		List<String> eventList = userDao.listEvents();
+		
+		String[] actions = msg.split(" ");
+		String event = actions[0];
+		
+		if(eventList.contains(event)){
+			
+			
+			Integer eventId = userDao.getEventId(event);
+			logger.info("Found the event as message: --"+event + " for event ID :"+eventId);
+			
+			try {
+				
+				String charset = "UTF-8";
+				String url = "http://localhost:8080/SMSProject/AddVote";
+				String opt = actions[1];
+				String query = String.format("eventid=%s&msisdn=%s&opt=%s", 
+					     URLEncoder.encode(eventId.toString(), charset), 
+					     URLEncoder.encode(source, charset),
+					     URLEncoder.encode(opt, charset));
+				URLConnection connection = new URL(url + "?" + query).openConnection();
+				connection.setRequestProperty("Accept-Charset", charset);
+				InputStream resp = connection.getInputStream();
+				
+			} catch (IOException e) {
+				logger.fatal(e);
+			}
+			
+			
+		}
+	}
+	
+	
 }

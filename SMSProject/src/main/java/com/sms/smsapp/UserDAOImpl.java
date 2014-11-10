@@ -2,10 +2,15 @@ package com.sms.smsapp;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sms.smsapp.dao.UserDAO;
@@ -23,7 +28,6 @@ public class UserDAOImpl implements UserDAO {
 	//@Override
 	@Transactional
 	public List<User> list() {
-		// TODO Auto-generated method stub
 		 @SuppressWarnings("unchecked")
 	        List<User> listUser = (List<User>) sessionFactory.getCurrentSession()
 	                .createCriteria(User.class)
@@ -58,6 +62,43 @@ public class UserDAOImpl implements UserDAO {
 		
 	}
 	
+	@Transactional
+	public List<String> listEvents() {
+		 @SuppressWarnings("unchecked")
+		 Session session = sessionFactory.getCurrentSession();
+		 List<String> eventList= session.createQuery("select evts.Event_Name from Events evts").list();
+		 return eventList;
+		 
+	}	
+	
+	@Transactional
+	public List<String> getVotes(String eventId){
+		@SuppressWarnings("unchecked")
+		 Session session = sessionFactory.getCurrentSession();
+		List<String> showVotes= session.createQuery("select V.Vote_Option, count(V.Vote_Option) from Votes  V where V.vote.Event_ID ="+eventId+" group by V.Vote_Option").list();
+		 
+		/*Criteria criteria = session.createCriteria(Votes.class);
+				criteria.add(Restrictions.eq("Event_ID", eventId));
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("Vote_Option"))
+				.add(Projections.count("Vote_Option"))
+				.add(Projections.groupProperty("Vote_Option")));
+
+		List<String> showVotes= criteria.list();*/
+		 
+		 
+		 return showVotes;
+	}
+	
+	@Transactional
+	public Integer getEventId(String ename) {
+		 @SuppressWarnings("unchecked")
+		 Session session = sessionFactory.getCurrentSession();
+		 Integer eventId= (Integer) session.createQuery("select evts.Event_ID from Events evts where evts.Event_Name ="+"'"+ename+"'").uniqueResult();
+		 return eventId;
+		 
+	}
+	
 	@Transactional 
 	public void saveVotes(Votes votes){
 		
@@ -65,5 +106,6 @@ public class UserDAOImpl implements UserDAO {
 		
 		session.save(votes);
 	}
+
 	
 }

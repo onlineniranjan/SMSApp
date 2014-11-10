@@ -69,64 +69,91 @@ public class SMSBindController {
 							sessionConfig.setSystemId("smppclient1");
 							sessionConfig.setPassword("password");
 							
-							try {
-								session = client.bind(sessionConfig, new SmppIncomingSessionHandler());
-								
-								SubmitSm sm = createSubmitSm("Test","6073727800","Test Niranjan","UCS-2");
-								
-								
-								//SubmitSmResp ssmr = session.submit(sm, TimeUnit.SECONDS.toMillis(60));
-								
-								//logger.info("Submitted sms for MSG ID = "+ssmr.getMessageId()+" and seqno # = "+ssmr.getSequenceNumber());
-								
-								WindowFuture<Integer,PduRequest,PduResponse> future2= session.sendRequestPdu (sm,TimeUnit.SECONDS.toMillis(60),false);
-								
-								
-								while (!future2.isDone()) {
-								     //logger.info ("Not done Succes is {}"+ future2.isSuccess ());
+						
+								try {
+									session = client.bind(sessionConfig, new SmppIncomingSessionHandler());
+								} catch (SmppBindException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (SmppTimeoutException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (SmppChannelException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (UnrecoverablePduException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								
-								logger.info("Message Sent and waiting.....");
-								
-								logger.info("Response is "+future2.getResponse());
-								logger.info("Done Success status is "+future2.isSuccess());
-								logger.info("Response time is "+future2.getAcceptToDoneTime());
-								//TimeUnit.SECONDS.sleep(10);
-								
-								//logger.info("Destroy session");
-								//session.close();
-								
-								//session.destroy();
-								
-								//logger.info("Destroy client");
-								
-								//client.destroy();
-								
-								//logger.info("....and done");
-								
-								
-							} catch (SmppBindException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (SmppTimeoutException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (SmppChannelException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (UnrecoverablePduException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (RecoverablePduException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+						
 							
 		
 							
+	}
+	
+	@RequestMapping("/Sendmsg")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void sendmsg(@RequestParam(value = "src",required = true)String src, 
+						@RequestParam(value = "dst",required = true)String dst, 
+						@RequestParam(value = "msg",required = true)String msg){
+		
+		String charset = "UCS-2";
+		
+		
+		SubmitSm sm = createSubmitSm(src,dst,msg,charset);
+		
+		
+		//SubmitSmResp ssmr = session.submit(sm, TimeUnit.SECONDS.toMillis(60));
+		
+		//logger.info("Submitted sms for MSG ID = "+ssmr.getMessageId()+" and seqno # = "+ssmr.getSequenceNumber());
+		
+		WindowFuture<Integer, PduRequest, PduResponse> future2;
+		try {
+			
+			future2 = session.sendRequestPdu (sm,TimeUnit.SECONDS.toMillis(60),false);
+			
+			while (!future2.isDone()) {
+			     //logger.info ("Not done Succes is {}"+ future2.isSuccess ());
+			}
+			
+			logger.info("Message Sent and waiting.....");
+			
+			logger.info("Response is "+future2.getResponse());
+			logger.info("Done Success status is "+future2.isSuccess());
+			logger.info("Response time is "+future2.getAcceptToDoneTime());
+			//TimeUnit.SECONDS.sleep(10);
+			
+			//logger.info("Destroy session");
+			//session.close();
+			
+			//session.destroy();
+			
+			//logger.info("Destroy client");
+			
+			//client.destroy();
+			
+			//logger.info("....and done");
+			
+		} catch (RecoverablePduException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnrecoverablePduException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SmppTimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SmppChannelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public  SubmitSm createSubmitSm(String src, String dst, String text, String charset){
@@ -158,10 +185,9 @@ public class SMSBindController {
 			e.printStackTrace();
 		}
 		
-		sm.setRegisteredDelivery((byte)1);
+		//sm.setRegisteredDelivery((byte)1);
 		
 		return sm;
-		
 		
 	}
 	

@@ -15,4 +15,7 @@ public interface UserDAO {
 	public void remove(Integer id);
 	public void saveEvent(Events event);
 	public void saveVotes(Votes votes);
+	public List<String> listEvents();
+	public Integer getEventId(String ename);
+	public List<String> getVotes(String eventId);
 }

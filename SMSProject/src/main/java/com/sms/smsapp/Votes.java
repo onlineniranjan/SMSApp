@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 @Entity
 @Table(name="Votes")
+//uniqueConstraints = { @UniqueConstraint( columnNames = { "NAME", "VERSION" } ) }
 public class Votes {
 	
 	public Votes(){}

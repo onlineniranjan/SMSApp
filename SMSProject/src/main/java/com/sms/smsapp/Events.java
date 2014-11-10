@@ -22,10 +22,10 @@ public class Events {
 	@Id
 	@GeneratedValue
 	@Column(name = "Event_ID")
-	private Integer eventId;
+	private Integer Event_ID;
 	
 	@Column(name="Event_Name")
-	private String eventName;
+	private String Event_Name;
 	
 	@Column(name="Event_options")
 	private Integer eventOptions;
@@ -44,19 +44,19 @@ public class Events {
 	
 	
 	public Integer getEventId() {
-		return eventId;
+		return Event_ID;
 	}
 
 	public void setEventId(Integer eventId) {
-		this.eventId = eventId;
+		this.Event_ID = eventId;
 	}
 
 	public String getEventName() {
-		return eventName;
+		return Event_Name;
 	}
 
 	public void setEventName(String eventName) {
-		this.eventName = eventName;
+		this.Event_Name = eventName;
 	}
 
 	public Integer getEventOptions() {
