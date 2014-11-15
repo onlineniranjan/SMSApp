@@ -50,13 +50,16 @@ public class AddUSer {
 	
 	@RequestMapping(value="/AddUser")
 	@ResponseStatus(value = HttpStatus.OK)
-	public void AddUser(@RequestParam(value = "name", required = true) String name){
+	public void AddUser(@RequestParam(value = "name", required = true) String name,
+						@RequestParam(value = "email", required = true) String email,
+						@RequestParam(value = "msisdn", required = true) String msisdn){
 			
 			User us = new User();
 			
 			us.setUsername(name);
 			us.setPassword(name);
-			us.setEmail("hhbbmm");
+			us.setEmail(email);
+			us.setMsisdn(msisdn);
 			
 			userDao.save(us);
 		
@@ -118,25 +121,24 @@ public class AddUSer {
 		
 		List<String> eventList = userDao.listEvents();
 		
-		String[] actions = msg.split(" ");
-		String event = actions[0];
+		String url; //= "http://localhost:8080/SMSProject/AddVote";
 		
-		if(eventList.contains(event)){
-			
-			
-			Integer eventId = userDao.getEventId(event);
-			logger.info("Found the event as message: --"+event + " for event ID :"+eventId);
+		String[] actions = msg.split(" ");
+		
+		
+		if(actions[0].equalsIgnoreCase("taxi")){
+			url = "http://localhost:8080/SMSProject/BookTaxi";
 			
 			try {
 				
 				String charset = "UTF-8";
-				String url = "http://localhost:8080/SMSProject/AddVote";
-				String opt = actions[1];
-				String query = String.format("eventid=%s&msisdn=%s&opt=%s", 
-					     URLEncoder.encode(eventId.toString(), charset), 
-					     URLEncoder.encode(source, charset),
-					     URLEncoder.encode(opt, charset));
+				//String url = "http://localhost:8080/SMSProject/AddVote";
+				String pickAddress = msg.substring(5);
+				String query = String.format("msisdn=%s&address=%s", 
+					     URLEncoder.encode(source, charset), 
+					     URLEncoder.encode(pickAddress, charset));
 				URLConnection connection = new URL(url + "?" + query).openConnection();
+				logger.info(url + "?" + query);
 				connection.setRequestProperty("Accept-Charset", charset);
 				InputStream resp = connection.getInputStream();
 				
@@ -144,8 +146,42 @@ public class AddUSer {
 				logger.fatal(e);
 			}
 			
-			
 		}
+		else{
+				url = "http://localhost:8080/SMSProject/AddVote";
+				
+				String event = actions[0];
+				
+				if(eventList.contains(event)){
+					
+					
+					Integer eventId = userDao.getEventId(event);
+					logger.info("Found the event as message: --"+event + " for event ID :"+eventId);
+					
+					try {
+						
+						String charset = "UTF-8";
+						//String url = "http://localhost:8080/SMSProject/AddVote";
+						String opt = actions[1];
+						String query = String.format("eventid=%s&msisdn=%s&opt=%s", 
+							     URLEncoder.encode(eventId.toString(), charset), 
+							     URLEncoder.encode(source, charset),
+							     URLEncoder.encode(opt, charset));
+						URLConnection connection = new URL(url + "?" + query).openConnection();
+						connection.setRequestProperty("Accept-Charset", charset);
+						InputStream resp = connection.getInputStream();
+						
+					} catch (IOException e) {
+						logger.fatal(e);
+					}
+					
+					
+				}
+				
+		}
+			
+		
+		
 	}
 	
 	

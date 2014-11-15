@@ -15,13 +15,14 @@
                 <th>No</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>msisdn</th>
                  
                 <c:forEach var="user" items="${userList}" varStatus="status">
                 <tr>
                     <td>${status.index + 1}</td>
                     <td>${user.username}</td>
                     <td>${user.email}</td>
-                             
+                    <td>${user.msisdn}</td>         
                 </tr>
                 </c:forEach>             
             </table>

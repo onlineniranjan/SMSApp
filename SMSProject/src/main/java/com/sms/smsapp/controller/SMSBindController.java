@@ -101,7 +101,7 @@ public class SMSBindController {
 						@RequestParam(value = "msg",required = true)String msg){
 		
 		String charset = "UCS-2";
-		
+		logger.info("Received parameters for sending message src"+src+" destination: "+dst+" message is "+msg);
 		
 		SubmitSm sm = createSubmitSm(src,dst,msg,charset);
 		

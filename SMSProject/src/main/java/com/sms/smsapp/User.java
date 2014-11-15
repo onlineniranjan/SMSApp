@@ -10,6 +10,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String msisdn;
 	public int getId() {
 		return id;
 	}
@@ -33,6 +34,12 @@ public class User {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getMsisdn() {
+		return msisdn;
+	}
+	public void setMsisdn(String msisdn) {
+		this.msisdn = msisdn;
 	}
     
     
